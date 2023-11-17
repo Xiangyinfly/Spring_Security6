@@ -12,6 +12,6 @@ import java.util.Collections;
 public class FrameworkUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return new User(username,"111111", Collections.emptyList());
+        return new User(username,"123456", Collections.emptyList());
     }
 }
