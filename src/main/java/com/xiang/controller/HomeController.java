@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/home")
-//@RequiredArgsConstructor
 public class HomeController {
     @GetMapping(value = "index", produces = MediaType.APPLICATION_JSON_VALUE)
     public JsonResult<String> index() {

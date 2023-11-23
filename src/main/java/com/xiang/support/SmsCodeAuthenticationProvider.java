@@ -21,6 +21,7 @@ public class SmsCodeAuthenticationProvider implements AuthenticationProvider {
             return new SmsCodeAuthenticationToken(mobilePhone,code, Collections.emptyList());
         }
 
+        //SpringSecurity规范：认证失败就抛异常，不要返回null
         throw new BadCredentialsException("验证码错误");
     }
 

@@ -26,6 +26,6 @@ public class FrameworkAuthenticationSuccessHandler implements AuthenticationSucc
         //在向前端回复信息之前，应该做一些其他操作
         //例如登录数据的持久化
         log.info("{} 登录成功",authentication.getPrincipal());
-        ResponseUtils.responseJson(response, JsonResult.success("登录成功"));
+        ResponseUtils.responseJson(response, JsonResult.success("登录成功",request.getAttribute("accessToken")));
     }
 }
