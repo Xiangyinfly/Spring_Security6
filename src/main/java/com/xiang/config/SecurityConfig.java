@@ -3,6 +3,7 @@ package com.xiang.config;
 import com.xiang.support.SmsCodeAuthenticationFilter;
 import com.xiang.support.SmsCodeAuthenticationProvider;
 import com.xiang.support.SmsCodeLoginConfigurer;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -24,23 +25,25 @@ public class SecurityConfig {
                                                           AuthenticationSuccessHandler authenticationSuccessHandler,
                                                           AuthenticationFailureHandler authenticationFailureHandler,
                                                           AuthenticationEntryPoint authenticationEntryPoint,
-                                                          SecurityContextRepository securityContextRepository) throws Exception {
+                                                          //声明一下用哪个SecurityContextRepository
+                                                          @Qualifier("frameworkJwtSecurityContextRepository") SecurityContextRepository securityContextRepository)
+            throws Exception {
         http.
-            formLogin(formLogin -> formLogin
-                .usernameParameter("username")
-                .passwordParameter("password")
-                .loginProcessingUrl("/login")
-                .successHandler(authenticationSuccessHandler)
-                .failureHandler(authenticationFailureHandler)
-            )
-            .csrf(csrf -> csrf.disable())
-            //配置权限
-            //.authorizeHttpRequests(author -> author.requestMatchers("/admin/**").hasRole("ADMIN"))
-            .authorizeHttpRequests(author -> author.anyRequest().authenticated())
-            //配置登录入口
-            .exceptionHandling(e -> e.authenticationEntryPoint(authenticationEntryPoint))
-            //requireExplicitSave现在默认为true
-            .securityContext(s -> s.securityContextRepository(securityContextRepository));
+                formLogin(formLogin -> formLogin
+                        .usernameParameter("username")
+                        .passwordParameter("password")
+                        .loginProcessingUrl("/login")
+                        .successHandler(authenticationSuccessHandler)
+                        .failureHandler(authenticationFailureHandler)
+                )
+                .csrf(csrf -> csrf.disable())
+                //配置权限
+                //.authorizeHttpRequests(author -> author.requestMatchers("/admin/**").hasRole("ADMIN"))
+                .authorizeHttpRequests(author -> author.anyRequest().authenticated())
+                //配置登录入口
+                .exceptionHandling(e -> e.authenticationEntryPoint(authenticationEntryPoint))
+                //requireExplicitSave现在默认为true
+                .securityContext(s -> s.securityContextRepository(securityContextRepository));
 
 
         Field filterOrdersField = HttpSecurity.class.getDeclaredField("filterOrders");
@@ -50,7 +53,7 @@ public class SecurityConfig {
         putMethod.setAccessible(true);
         //要把SmsCodeAuthenticationFilter的order放在UsernamePasswordAuthenticationFilter附近
         //因为UsernamePasswordAuthenticationFilter是1900，所以将其order设为1901
-        putMethod.invoke(filterRegistration, SmsCodeAuthenticationFilter.class,1901);
+        putMethod.invoke(filterRegistration, SmsCodeAuthenticationFilter.class, 1901);
 
         SmsCodeLoginConfigurer<HttpSecurity> httpSecuritySmsCodeLoginConfigurer = new SmsCodeLoginConfigurer<>("/smsCodeLogin");
         httpSecuritySmsCodeLoginConfigurer
